@@ -1,5 +1,10 @@
 # vue-drop-zone
 
+A vue component that supports drag & drop files.
+
+TODO:
+3. UI
+
 ## Project setup
 ```
 yarn install
