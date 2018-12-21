@@ -14,7 +14,7 @@
         <div id="drop-zone" class="abs-pos" v-bind:class="{promptDropClass:promptDrop, loadedClass:!!fileLoaded}"
              v-bind:style="styleObjectApp"
         >
-            <div id="div-prompt-text">
+            <div id="div-prompt">
                 <component id="area-icon" v-bind:is="currentComponent" v-bind:style="styleObjectSVG"></component>
             </div>
 
@@ -172,23 +172,23 @@
             left: 0;
         }
 
+        /*the coverup div*/
         #cover {
             z-index: 2;
             cursor: pointer;
         }
 
-        #drop-zone {
-            z-index: 1;
-        }
 
-        #area-icon {
-            margin: 0 auto;
-        }
-
+        /*the actual div that displays all the stuff*/
         #drop-zone {
+            #area-icon {
+                margin: 0 auto;
+            }
+
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 1;
 
             box-sizing: border-box;
 
