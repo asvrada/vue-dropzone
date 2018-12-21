@@ -1,23 +1,26 @@
 <template>
     <!--emit fileUploaded event open file received-->
-    <div id="app">
-        <div id="cover" class="abs-pos"
+    <div id="app" class="full-size">
+        <div id="cover" class="full-size"
              v-on:dragenter.prevent.stop="handleDragEnter"
              v-on:dragleave.prevent.stop="handleDragLeave"
              v-on:dragover.prevent.stop="handleDragOver"
              v-on:drop.prevent.stop="handleDrop"
              v-on:click="promptSelectFile"
-
-             v-bind:style="styleObjectCover"
         ></div>
 
-        <div id="drop-zone" class="abs-pos" v-bind:class="{promptDropClass:promptDrop, loadedClass:!!fileLoaded}"
+        <div id="drop-zone" class="full-size"
              v-bind:style="styleObjectApp"
         >
-            <div id="div-prompt">
-                <component id="area-icon" v-bind:is="currentComponent" v-bind:style="styleObjectSVG"></component>
+            <!--icon-->
+            <div id="div-prompt" class="full-size">
+                <div id="border" class="full-size"
+                     v-bind:class="{promptDropClass:promptDrop}"
+                ></div>
+                <component id="area-icon" v-bind:is="currentComponent"></component>
             </div>
 
+            <!--fallback file uploader-->
             <form v-show="false" class="form-file-upload">
                 <input type="file" id="elem-file" v-on:change="handleForm">
                 <label ref="btn_form" class="button" for="elem-file">Select subtitle file</label>
@@ -27,8 +30,8 @@
 </template>
 
 <script>
-    import IconInit from "./icon-init";
-    import IconSelected from "./icon-selected";
+    import IconInit from "./icon/IconInit";
+    import IconSelected from "./icon/IconSelected";
 
     export default {
         name: "drop-zone",
@@ -42,13 +45,10 @@
                 promptDrop: false,
                 style: {
                     color: {
-                        init: "#303F9F",
-                        drop: "#FFA000",
-                        loaded: "#689F38"
+                        "init": "#303F9F",
+                        "drop": "#FFA000",
+                        "loaded": "#689F38"
                     },
-                    ratio: 1.6,
-                    height: 140,
-                    svgSizeMultiplier: 0.5,
                     borderThickness: 10
                 }
             }
@@ -65,35 +65,13 @@
 
                 return "init";
             },
-            styleObjectCover: function () {
-                const style = this.style;
-
-                return {
-                    height: `${style.height}px`,
-                    width: `${style.height * style.ratio}px`,
-                }
-            },
             styleObjectApp: function () {
                 const style = this.style;
 
                 let state = this.currentState;
 
                 return {
-                    height: `${style.height}px`,
-                    width: `${style.height * style.ratio}px`,
                     "background-color": `${style.color[state]}`
-                }
-            },
-            styleObjectSVG: function () {
-                const style = this.style;
-
-                let outerHeight = style.height - (this.promptDrop ? 2 * style.borderThickness : 0);
-                let thisHeight = style.height * style.svgSizeMultiplier;
-                let padding = (outerHeight - thisHeight) / 2;
-                return {
-                    width: `${thisHeight}px`,
-                    "padding-top": `${padding}px`,
-                    "padding-bottom": `${padding}px`,
                 }
             },
             currentComponent: function () {
@@ -125,8 +103,7 @@
                     console.log("Error drag & drop file", e)
                 }
 
-                this.callbackFileHandler(files);
-
+                this.handleFiles(files);
             },
             handleForm(e) {
                 let files = null;
@@ -139,18 +116,17 @@
                     console.log("Error input file", e)
                 }
 
-                this.callbackFileHandler(files);
+                this.handleFiles(files);
             },
             /**
              * Calls the file handler passed in from outside
-             * @param file
+             * @param files
              */
-            callbackFileHandler(file) {
-                this.fileLoaded = file;
+            handleFiles(files) {
+                this.fileLoaded = files;
                 this.promptDrop = false;
 
-                this.$emit('fileUploaded', file);
-                console.log(file);
+                this.$emit('fileUploaded', files);
             },
             /**
              * User clicks the upload area, prompt user to select files from system
@@ -163,17 +139,20 @@
 </script>
 
 <style lang="scss" scoped>
+    .full-size {
+        width: 100%;
+        height: 100%;
+    }
+
     #app {
         position: relative;
 
-        .abs-pos {
+        /*the coverup div*/
+        #cover {
             position: absolute;
             top: 0;
             left: 0;
-        }
 
-        /*the coverup div*/
-        #cover {
             z-index: 2;
             cursor: pointer;
         }
@@ -181,26 +160,36 @@
 
         /*the actual div that displays all the stuff*/
         #drop-zone {
-            #area-icon {
-                margin: 0 auto;
+            #div-prompt {
+
+                #border {
+                    box-sizing: border-box;
+                    border-radius: 20px;
+                }
+
+                #area-icon {
+                    position: absolute;
+                    margin: 0 auto;
+                    top: 50%;
+                    left: 50%;
+                    width: 35%;
+                    transform: translate(-50%, -50%);
+                }
             }
 
             position: absolute;
             top: 0;
             left: 0;
+
             z-index: 1;
 
             box-sizing: border-box;
-
             border-radius: 20px;
         }
 
         /* style after dragEnter */
         .promptDropClass {
             border: 10px dashed #707070;
-        }
-
-        .loadedClass {
         }
     }
 </style>

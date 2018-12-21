@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import DropZone from './components/drop-zone';
+    import DropZone from './components/DropZone';
 
     export default {
         name: 'app',
@@ -17,5 +17,7 @@
 
 <style>
     #app {
+        width: 240px;
+        height: 150px;
     }
 </style>

@@ -3,7 +3,7 @@
 A vue component that supports drag & drop files.
 
 TODO:
-3. UI
+3. Expand Drop Area to full website view
 
 ## Project setup
 ```
