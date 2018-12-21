@@ -177,6 +177,7 @@
                 }
             }
 
+            transition: background-color 400ms linear;
             position: absolute;
             top: 0;
             left: 0;
