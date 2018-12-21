@@ -1,24 +1,28 @@
 <template>
     <!--emit fileUploaded event open file received-->
-    <div id="drop-zone"
-         v-on:dragenter.prevent.stop="handleDragEnter"
-         v-on:dragleave.prevent.stop="handleDragLeave"
-         v-on:dragover.prevent.stop="handleDragOver"
-         v-on:drop.prevent.stop="handleDrop"
-         v-on:click="promptSelectFile"
+    <div id="app">
+        <div id="cover" class="abs-pos"
+             v-on:dragenter.prevent.stop="handleDragEnter"
+             v-on:dragleave.prevent.stop="handleDragLeave"
+             v-on:dragover.prevent.stop="handleDragOver"
+             v-on:drop.prevent.stop="handleDrop"
+             v-on:click="promptSelectFile"
 
-         v-bind:class="{promptDropClass:promptDrop, loadedClass:!!fileLoaded}"
-         v-bind:style="styleObjectApp"
-    >
+             v-bind:style="styleObjectCover"
+        ></div>
 
-        <div id="div-prompt-text">
-            <component id="area-icon" v-bind:is="currentComponent" v-bind:style="styleObjectSVG"></component>
+        <div id="drop-zone" class="abs-pos" v-bind:class="{promptDropClass:promptDrop, loadedClass:!!fileLoaded}"
+             v-bind:style="styleObjectApp"
+        >
+            <div id="div-prompt-text">
+                <component id="area-icon" v-bind:is="currentComponent" v-bind:style="styleObjectSVG"></component>
+            </div>
+
+            <form v-show="false" class="form-file-upload">
+                <input type="file" id="elem-file" v-on:change="handleForm">
+                <label ref="btn_form" class="button" for="elem-file">Select subtitle file</label>
+            </form>
         </div>
-
-        <form v-show="false" class="form-file-upload">
-            <input type="file" id="elem-file" v-on:change="handleForm">
-            <label ref="btn_form" class="button" for="elem-file">Select subtitle file</label>
-        </form>
     </div>
 </template>
 
@@ -60,6 +64,14 @@
                 }
 
                 return "init";
+            },
+            styleObjectCover: function () {
+                const style = this.style;
+
+                return {
+                    height: `${style.height}px`,
+                    width: `${style.height * style.ratio}px`,
+                }
             },
             styleObjectApp: function () {
                 const style = this.style;
@@ -103,31 +115,31 @@
                 // we don't need this ...
             },
             handleDrop(e) {
-                let file = null;
+                let files = null;
 
                 try {
                     let dt = e.dataTransfer;
-                    file = dt.files[0];
+                    files = dt.files;
                 } catch (e) {
                     alert("There was a problem processing your file, please try again");
                     console.log("Error drag & drop file", e)
                 }
 
-                this.callbackFileHandler(file);
+                this.callbackFileHandler(files);
 
             },
             handleForm(e) {
-                let file = null;
+                let files = null;
 
                 try {
                     let dt = e.target;
-                    file = dt.files[0];
+                    files = dt.files;
                 } catch (e) {
                     alert("There was a problem processing your file, please try again");
                     console.log("Error input file", e)
                 }
 
-                this.callbackFileHandler(file);
+                this.callbackFileHandler(files);
             },
             /**
              * Calls the file handler passed in from outside
@@ -138,6 +150,7 @@
                 this.promptDrop = false;
 
                 this.$emit('fileUploaded', file);
+                console.log(file);
             },
             /**
              * User clicks the upload area, prompt user to select files from system
@@ -150,26 +163,44 @@
 </script>
 
 <style lang="scss" scoped>
-    #div-prompt-text {
-    }
+    #app {
+        position: relative;
 
-    #area-icon {
-        margin: 0 auto;
-    }
+        .abs-pos {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
 
-    #drop-zone {
-        box-sizing: border-box;
+        #cover {
+            z-index: 2;
+            cursor: pointer;
+        }
 
-        border-radius: 20px;
+        #drop-zone {
+            z-index: 1;
+        }
 
-        cursor: pointer;
-    }
+        #area-icon {
+            margin: 0 auto;
+        }
 
-    /* style after dragEnter */
-    .promptDropClass {
-        border: 10px dashed #707070;
-    }
+        #drop-zone {
+            position: absolute;
+            top: 0;
+            left: 0;
 
-    .loadedClass {
+            box-sizing: border-box;
+
+            border-radius: 20px;
+        }
+
+        /* style after dragEnter */
+        .promptDropClass {
+            border: 10px dashed #707070;
+        }
+
+        .loadedClass {
+        }
     }
 </style>
