@@ -89,7 +89,7 @@
             handleDragLeave() {
                 this.promptDrop = false;
             },
-            handleDragOver(e) {
+            handleDragOver() {
                 // we don't need this ...
             },
             handleDrop(e) {
